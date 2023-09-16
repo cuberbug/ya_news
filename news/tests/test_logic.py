@@ -1,18 +1,3 @@
-# news/tests/test_logic.py
-from http import HTTPStatus
-
-from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
-from django.urls import reverse
-
-# Импортируем из файла с формами список стоп-слов и предупреждение формы.
-# Загляните в news/forms.py, разберитесь с их назначением.
-from news.forms import BAD_WORDS, WARNING
-from news.models import Comment, News
-
-User = get_user_model()
-
-
 """
 Анонимный пользователь не может:
     + отправить комментарий.
@@ -25,6 +10,18 @@ User = get_user_model()
 Авторизованный пользователь не может
     + редактировать или удалять чужие комментарии.
 """
+from http import HTTPStatus
+
+from django.contrib.auth import get_user_model
+from django.test import Client, TestCase
+from django.urls import reverse
+
+# Импортируем из файла с формами список стоп-слов и предупреждение формы.
+# Загляните в news/forms.py, разберитесь с их назначением.
+from news.forms import BAD_WORDS, WARNING
+from news.models import Comment, News
+
+User = get_user_model()
 
 
 class TestCommentCreation(TestCase):
