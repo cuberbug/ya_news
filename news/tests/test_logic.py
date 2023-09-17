@@ -16,8 +16,6 @@ from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 
-# Импортируем из файла с формами список стоп-слов и предупреждение формы.
-# Загляните в news/forms.py, разберитесь с их назначением.
 from news.forms import BAD_WORDS, WARNING
 from news.models import Comment, News
 
@@ -42,6 +40,7 @@ class TestCommentCreation(TestCase):
         cls.auth_client.force_login(cls.user)
         # Данные для POST-запроса при создании комментария.
         cls.form_data = {'text': cls.COMMENT_TEXT}
+
         print(f'\t>создан пользователь: {cls.user}')
         print(
             '\t>создана тестовая заметка:'
@@ -57,6 +56,7 @@ class TestCommentCreation(TestCase):
         comments_count = Comment.objects.count()
         # Ожидаем, что комментариев в базе нет - сравниваем с нулём.
         self.assertEqual(comments_count, 0)
+
         if comments_count == 0:
             print('\t>> OK')
 
@@ -76,6 +76,7 @@ class TestCommentCreation(TestCase):
         self.assertEqual(comment.text, self.COMMENT_TEXT)
         self.assertEqual(comment.news, self.news)
         self.assertEqual(comment.author, self.user)
+
         if (
             comments_count == 1
             and comment.text == self.COMMENT_TEXT
@@ -101,6 +102,7 @@ class TestCommentCreation(TestCase):
         # Дополнительно убедимся, что комментарий не был создан.
         comments_count = Comment.objects.count()
         self.assertEqual(comments_count, 0)
+
         if comments_count == 0:
             print('\t>> OK')
 
@@ -144,6 +146,7 @@ class TestCommentEditDelete(TestCase):
         cls.delete_url = reverse('news:delete', args=(cls.comment.id,))
         # Формируем данные для POST-запроса по обновлению комментария.
         cls.form_data = {'text': cls.NEW_COMMENT_TEXT}
+
         print(f'\t>созданы пользователи: {cls.author}, {cls.reader}')
         print(f'\t>создана тестовая заметка: {cls.comment.text}')
         print('=============================================')
@@ -159,6 +162,7 @@ class TestCommentEditDelete(TestCase):
         comments_count = Comment.objects.count()
         # Ожидаем ноль комментариев в системе.
         self.assertEqual(comments_count, 0)
+
         if comments_count == 0:
             print('\t>> OK')
 
@@ -171,6 +175,7 @@ class TestCommentEditDelete(TestCase):
         # Убедимся, что комментарий по-прежнему на месте.
         comments_count = Comment.objects.count()
         self.assertEqual(comments_count, 1)
+
         if comments_count == 1 and response.status_code == 404:
             print('\t>> OK')
 
@@ -184,6 +189,7 @@ class TestCommentEditDelete(TestCase):
         self.comment.refresh_from_db()
         # Проверяем, что текст комментария соответствует обновленному.
         self.assertEqual(self.comment.text, self.NEW_COMMENT_TEXT)
+
         if self.comment.text == self.NEW_COMMENT_TEXT:
             print('\t>> OK')
 
@@ -197,6 +203,7 @@ class TestCommentEditDelete(TestCase):
         self.comment.refresh_from_db()
         # Проверяем, что текст остался тем же, что и был.
         self.assertEqual(self.comment.text, self.COMMENT_TEXT)
+
         if (
             self.comment.text == self.COMMENT_TEXT
             and response.status_code == 404
