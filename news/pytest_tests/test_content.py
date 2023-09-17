@@ -9,9 +9,8 @@
 + Анонимному пользователю недоступна форма для отправки комментария
     на странице отдельной новости, а авторизованному доступна.
 """
-from django.conf import settings
 import pytest
-
+from django.conf import settings
 from django.urls import reverse
 
 
@@ -46,7 +45,7 @@ def test_news_list_for_different_users(
 @pytest.mark.parametrize(
     'name, args',
     (
-        ('news:detail', pytest.lazy_fixture('new_id_for_args')),
+        ('news:detail', pytest.lazy_fixture('news_id_for_args')),
     ),
     ids=['Detail']
 )
@@ -83,7 +82,7 @@ def test_news_order(news_for_count, client):
 @pytest.mark.parametrize(
     'name, args',
     (
-        ('news:detail', pytest.lazy_fixture('new_id_for_args')),
+        ('news:detail', pytest.lazy_fixture('news_id_for_args')),
     ),
     ids=['Detail']
 )

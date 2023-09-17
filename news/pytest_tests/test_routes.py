@@ -26,7 +26,7 @@ from pytest_django.asserts import assertRedirects
         ('users:login', None),
         ('users:logout', None),
         ('users:signup', None),
-        ('news:detail', pytest.lazy_fixture('new_id_for_args')),
+        ('news:detail', pytest.lazy_fixture('news_id_for_args')),
     ),
     ids=['Homepage', 'Login', 'Logout', 'Signup', 'Detail']
 )

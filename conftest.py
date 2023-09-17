@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
+
+import pytest
 from django.conf import settings
 from django.utils import timezone
-import pytest
 
+from news.forms import BAD_WORDS
 from news.models import Comment, News
 
 
@@ -13,9 +15,22 @@ def author(django_user_model):
 
 
 @pytest.fixture
+def user(django_user_model):
+    """Модель пользователя-юзера."""
+    return django_user_model.objects.create(username='Юзер')
+
+
+@pytest.fixture
 def author_client(author, client):
     """Залогиненный в клиенте автор."""
     client.force_login(author)
+    return client
+
+
+@pytest.fixture
+def user_client(user, client):
+    """Залогиненный в клиенте автор."""
+    client.force_login(user)
     return client
 
 
@@ -45,7 +60,7 @@ def news_for_count() -> News:
 
 
 @pytest.fixture
-def new_id_for_args(news: News) -> tuple:
+def news_id_for_args(news: News) -> tuple:
     """ID для новости."""
     return news.id,
 
@@ -80,3 +95,19 @@ def comment_for_count(author, news: News) -> Comment:
 def comment_id_for_args(comment: Comment) -> tuple:
     """ID для коммента."""
     return comment.id,
+
+
+@pytest.fixture
+def form_data():
+    """Подготавливает словарь для запроса на изменение комментария."""
+    return {
+        'text': 'Текст изменённого комментария',
+    }
+
+
+@pytest.fixture
+def bad_words_data():
+    """Подготавливает запрос на создание комментария с запрещённым словом."""
+    return {
+        'text': f'Какой-то текст, {BAD_WORDS[0]}, еще текст',
+    }

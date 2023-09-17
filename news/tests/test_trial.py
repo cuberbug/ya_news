@@ -1,6 +1,7 @@
 # news/tests/test_trial.py
 # news/tests/test_trial.py
 from unittest import skip
+
 from django.test import TestCase
 
 # Импортируем модель, чтобы работать с ней в тестах.
