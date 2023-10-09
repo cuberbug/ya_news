@@ -39,6 +39,7 @@ class TestHomePage(TestCase):
         )
 
     def test_news_count(self):
+        """Проверка работы настройки количества выводимых новостей."""
         print('Тест домашней страницы')
         # Загружаем главную страницу.
         response = self.client.get(self.HOME_URL)
@@ -48,10 +49,12 @@ class TestHomePage(TestCase):
         # Определяем длину списка.
         news_count = len(object_list)
         print(f'\tКоличество новостей на странице: {news_count}')
+
         # Проверяем, что на странице именно 10 новостей.
         self.assertEqual(news_count, settings.NEWS_COUNT_ON_HOME_PAGE)
 
     def test_news_order(self):
+        """Проверка сортировки новостей: от новых к старым."""
         print('Тест сортировки новостей')
         response = self.client.get(self.HOME_URL)
         object_list = response.context['object_list']
@@ -59,6 +62,7 @@ class TestHomePage(TestCase):
         all_dates = [news.date for news in object_list]
         # Сортируем полученный список по убыванию.
         sorted_dates = sorted(all_dates, reverse=True)
+
         # Проверяем, что исходный список был отсортирован правильно.
         self.assertEqual(all_dates, sorted_dates)
 
@@ -96,6 +100,7 @@ class TestDetailPage(TestCase):
         """Тест сортировки комментариев."""
         print("""Тест сортировки комментариев.""")
         response = self.client.get(self.detail_url)
+
         # Проверяем, что объект новости находится в словаре контекста
         # под ожидаемым именем - названием модели.
         self.assertIn('news', response.context)

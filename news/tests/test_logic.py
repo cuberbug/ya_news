@@ -48,6 +48,7 @@ class TestCommentCreation(TestCase):
         )
 
     def test_anonymous_user_cant_create_comment(self):
+        """Проверка невозможности создания заметки анонимным пользователем."""
         print('\nТест отправки POST-запроса на создание коммента от анонима:')
         # Совершаем запрос от анонимного клиента, в POST-запросе отправляем
         # предварительно подготовленные данные формы с текстом комментария.
@@ -61,6 +62,9 @@ class TestCommentCreation(TestCase):
             print('\t>> OK')
 
     def test_user_can_create_comment(self):
+        """
+        Проверка возможности создания заметки авторизованным пользователем.
+        """
         print('\nТест отправки POST-запроса на создание коммента от юзера:')
         # Совершаем запрос через авторизованный клиент.
         response = self.auth_client.post(self.url, data=self.form_data)
@@ -86,6 +90,7 @@ class TestCommentCreation(TestCase):
             print('\t>> OK')
 
     def test_user_cant_use_bad_words(self):
+        """Проверка блокировки стоп-слов."""
         print('\nПроверка блокировки стоп-слов:')
         # Формируем данные для отправки формы; текст включает
         # первое слово из списка стоп-слов.
@@ -152,9 +157,11 @@ class TestCommentEditDelete(TestCase):
         print('=============================================')
 
     def test_author_can_delete_comment(self):
+        """Проверка возможности удаления комментария автором."""
         print('\nТест удаления комментария автором:')
         # От имени автора комментария отправляем DELETE-запрос на удаление.
         response = self.author_client.delete(self.delete_url)
+
         # Проверяем, что редирект привёл к разделу с комментариями.
         # Заодно проверим статус-коды ответов.
         self.assertRedirects(response, self.url_to_comments)
@@ -167,9 +174,11 @@ class TestCommentEditDelete(TestCase):
             print('\t>> OK')
 
     def test_user_cant_delete_comment_of_another_user(self):
+        """Проверка невозможности удаления чужого комментария."""
         print('\nТест удаления комментария читателем:')
         # Выполняем запрос на удаление от пользователя-читателя.
         response = self.reader_client.delete(self.delete_url)
+
         # Проверяем, что вернулась 404 ошибка.
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
         # Убедимся, что комментарий по-прежнему на месте.
@@ -180,9 +189,11 @@ class TestCommentEditDelete(TestCase):
             print('\t>> OK')
 
     def test_author_can_edit_comment(self):
+        """Проверка возможности редактирования комментария автором."""
         print('\nТест редактирования комментария автором:')
         # Выполняем запрос на редактирование от имени автора комментария.
         response = self.author_client.post(self.edit_url, data=self.form_data)
+
         # Проверяем, что сработал редирект.
         self.assertRedirects(response, self.url_to_comments)
         # Обновляем объект комментария.
@@ -194,9 +205,11 @@ class TestCommentEditDelete(TestCase):
             print('\t>> OK')
 
     def test_user_cant_edit_comment_of_another_user(self):
+        """Проверка невозможности редактирования чужого комментария."""
         print('\nТест редактирования комментария читателем:')
         # Выполняем запрос на редактирование от имени другого пользователя.
         response = self.reader_client.post(self.edit_url, data=self.form_data)
+
         # Проверяем, что вернулась 404 ошибка.
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
         # Обновляем объект комментария.

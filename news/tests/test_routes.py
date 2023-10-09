@@ -39,18 +39,17 @@ class TestRoutes(TestCase):
         )
 
     def test_pages_availability(self):
+        """
+        Тест доступности страниц для анонима:
+        * главная;
+        * логин;
+        * логаут;
+        * регистрация;
+        * подробная страница новости.
+        """
         print('test pages')
-        # Создаём набор тестовых данных - кортеж кортежей.
-        # Каждый вложенный кортеж содержит два элемента:
-        # имя пути и позиционные аргументы для функции reverse().
         urls = (
-            # Путь для главной страницы не принимает
-            # никаких позиционных аргументов,
-            # поэтому вторым параметром ставим None.
             ('news:home', None),
-            # Путь для страницы новости
-            # принимает в качестве позиционного аргумента
-            # id записи; передаём его в кортеже.
             ('news:detail', (self.news.id,)),
             ('users:login', None),
             ('users:logout', None),
@@ -64,9 +63,15 @@ class TestRoutes(TestCase):
                 # и получаем адрес страницы для GET-запроса:
                 url = reverse(name, args=args)
                 response = self.client.get(url)
+
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_availability_for_comment_edit_and_delete(self):
+        """
+        Тест доступности страниц для автора и юзера:
+        * редактирование комментария;
+        * удаление комментария.
+        """
         print('test availability')
         users_statuses = (
             (self.author, HTTPStatus.OK),
@@ -81,9 +86,11 @@ class TestRoutes(TestCase):
                 with self.subTest(user=user, name=name):
                     url = reverse(name, args=(self.comment.id,))
                     response = self.client.get(url)
+
                     self.assertEqual(response.status_code, status)
 
     def test_redirect_for_anonymous_client(self):
+        """Тест редиректа анонима с недоступных ему страниц."""
         print('test redirect')
         # Сохраняем адрес страницы логина:
         login_url = reverse('users:login')
@@ -100,5 +107,6 @@ class TestRoutes(TestCase):
                 # с которой пользователь был переадресован.
                 redirect_url = f'{login_url}?next={url}'
                 response = self.client.get(url)
+
                 # Проверяем, что редирект приведёт именно на указанную ссылку.
                 self.assertRedirects(response, redirect_url)
